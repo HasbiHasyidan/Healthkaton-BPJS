@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  klaimguard-ai:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./backend/jkn_fraud.db:/app/backend/jkn_fraud.db
+      - ./backend/ml_models:/app/backend/ml_models
+    command: >
+      sh -c "python scripts/init_db.py && 
+             python scripts/train_xgboost.py && 
+             uvicorn main:app --host 0.0.0.0 --port 8000"
